@@ -8,7 +8,7 @@ from torchinfo import summary
 from torchvision import transforms
 
 from modules import net, trainer
-from modules.Dataset import ChestXRayImageDataset
+from modules.dataset import ChestXRayImageDataset
 
 transform = transforms.Compose([
     transforms.Resize(224),
