@@ -144,12 +144,24 @@ def run(device: str,
 
     for epoch in range(1, epochs+1):
         print('--- TRAIN ---')
-        train_epoch(device, train_loader, model, loss_fn, optimizer, epoch, epochs,
-                    log_interval)
+        train_epoch(device=device,
+                    train_loader=train_loader,
+                    model=model,
+                    loss_fn=loss_fn,
+                    optimizer=optimizer,
+                    epochs_till_now=epoch,
+                    final_epoch=epochs,
+                    log_interval=log_interval)
 
         print('--- VAL ---')
-        _, _, roc = val_epoch(device, val_loader, model, loss_fn, labels,
-                              epoch, epochs, log_interval=log_interval)
+        _, _, roc = val_epoch(device=device,
+                              val_loader=val_loader,
+                              model=model,
+                              loss_fn=loss_fn,
+                              labels=labels,
+                              epochepochs_till_now=epoch,
+                              final_epoch=epochs,
+                              log_interval=log_interval)
         print('ROC_AUC_SCORE: {}'.format(roc))
 
         if (epoch%save_interval == 0):
