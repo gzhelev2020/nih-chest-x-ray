@@ -155,3 +155,6 @@ def run(device: str,
             print('Model saved to {}'.format(model_loc))
 
 
+    model_loc = os.path.join(model_dir, 'model_weights_final.pth')
+    torch.save(model.state_dict(), model_loc)
+    print('Model saved to {}'.format(model_loc))
