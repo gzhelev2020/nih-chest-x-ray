@@ -2,6 +2,7 @@ import argparse, os
 import config
 import utils
 import net, trainer
+from torchinfo import summary
 
 import torch
 from Dataset import ChestXRayImageDataset
@@ -34,8 +35,14 @@ def main():
 
     model = net.get_model(len(ChestXRayImageDataset.labels))
 
-    print("Trainable parameters:")
-    print(filter(lambda p: p.requires_grad, model.parameters()))
+    print('--- STAGE 1 ---') # only training 'layer2', 'layer3', 'layer4' and 'fc'
+    for name, param in model.named_parameters(): # all requires_grad by default, are True initially
+        if ('layer2' in name) or ('layer3' in name) or ('layer4' in name) or ('fc' in name):
+            param.requires_grad = True
+        else:
+            param.requires_grad = False
+
+    print(summary(model, input_size=(args.train_bs, 3, 244, 244)))
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
                            lr = args.lr)
 
