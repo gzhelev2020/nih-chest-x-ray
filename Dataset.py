@@ -37,6 +37,9 @@ class ChestXRayImageDataset(VisionDataset):
 
         self.img_dir = os.path.join(root, self.rel_img_dir)
         self.label_file = os.path.join(self.root, self.rel_label_file)
+
+        if not train:
+            frac = frac * 0.2
         self.data, self.targets = self._load_data(frac)
 
 
