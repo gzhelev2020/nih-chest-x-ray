@@ -7,7 +7,6 @@ import pandas as pd
 from PIL import Image
 
 from torchvision.io import read_image
-from torchvision.io.image import ImageReadMode
 from torchvision.datasets import VisionDataset
 
 from itertools import chain
