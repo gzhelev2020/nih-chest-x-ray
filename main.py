@@ -8,7 +8,7 @@ from torchinfo import summary
 from torchvision import transforms
 
 from modules import net, trainer
-from modules.dataset import ChestXRayImageDataset
+from modules.dataset import ChestXRayImageDataset, ChestXRayImages
 
 transform = transforms.Compose([
     transforms.Resize(224),
@@ -34,11 +34,22 @@ def main():
     parser.add_argument('--data-frac', type = float, default = 1, help = 'use only fraction of the data')
     args = parser.parse_args()
 
-    data_train = ChestXRayImageDataset(args.data_path, True, transform=transform,
-                                       frac=args.data_frac)
-    data_test = ChestXRayImageDataset(args.data_path, False, transform=transform,
-                                      frac=args.data_frac)
-
+    data_wrapper = ChestXRayImages(args.data_path, folds=5, frac=args.data_frac)
+    data_train = ChestXRayImageDataset(
+        args.data_path,
+        data_wrapper.data_train(0),
+        transform=transform
+    )
+    data_val = ChestXRayImageDataset(
+        args.data_path,
+        data_wrapper.data_val(0),
+        transform=transform
+    )
+    data_test = ChestXRayImageDataset(
+        args.data_path,
+        data_wrapper.data_test,
+        transform=transform
+    )
 
     model = net.get_model(len(ChestXRayImageDataset.labels))
 
@@ -50,7 +61,7 @@ def main():
 
     test_loader = torch.utils.data.DataLoader(data_test,
                                               batch_size=args.test_bs)
-    val_loader = torch.utils.data.DataLoader(data_test,
+    val_loader = torch.utils.data.DataLoader(data_val,
                                              batch_size=args.val_bs)
     train_loader = torch.utils.data.DataLoader(data_train,
                                                batch_size=args.train_bs)
