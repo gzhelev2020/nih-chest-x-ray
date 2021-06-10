@@ -1,17 +1,14 @@
-import os
 import glob
-import torch
+import os
+from itertools import chain
+from typing import Any, Callable, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-
+import torch
 from PIL import Image
-
-from torchvision.io import read_image
 from torchvision.datasets import VisionDataset
-
-from itertools import chain
-
-from typing import Any, Callable, Optional, Tuple
+from torchvision.io import read_image
 
 
 class ChestXRayImageDataset(VisionDataset):

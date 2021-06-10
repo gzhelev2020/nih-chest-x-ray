@@ -1,13 +1,15 @@
 import os
+import time
+from typing import List
+
 import numpy as np
-from torch.utils.data import DataLoader
+import torch
+from sklearn.metrics import roc_auc_score
 from torch.nn import Module
 from torch.nn.modules.loss import _Loss
 from torch.optim.optimizer import Optimizer
+from torch.utils.data import DataLoader
 
-import torch, time
-from sklearn.metrics import roc_auc_score
-from typing import List
 
 def get_roc_auc_score(y_true, y_probs, labels):
     class_roc_auc_list = dict()

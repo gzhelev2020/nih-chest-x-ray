@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from torchvision import datasets, models, transforms
+
 
 def get_model(num_classes):
     model = models.resnet50(pretrained=True, progress=True)

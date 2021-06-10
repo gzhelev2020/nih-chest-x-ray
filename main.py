@@ -1,14 +1,21 @@
-import argparse, os
-import config
-import utils
-import net, trainer
-from torchinfo import summary
+import argparse
+import os
 
 import torch
-from Dataset import ChestXRayImageDataset
-import torch.optim as optim
 import torch.nn as nn
+import torch.optim as optim
+from torchinfo import summary
+from torchvision import transforms
 
+from modules import net, trainer
+from modules.Dataset import ChestXRayImageDataset
+
+transform = transforms.Compose([
+    transforms.Resize(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
+])
 
 def main():
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -27,9 +34,9 @@ def main():
     parser.add_argument('--data-frac', type = float, default = 1, help = 'use only fraction of the data')
     args = parser.parse_args()
 
-    data_train = ChestXRayImageDataset(args.data_path, True, transform=config.transform,
+    data_train = ChestXRayImageDataset(args.data_path, True, transform=transform,
                                        frac=args.data_frac)
-    data_test = ChestXRayImageDataset(args.data_path, False, transform=config.transform,
+    data_test = ChestXRayImageDataset(args.data_path, False, transform=transform,
                                       frac=args.data_frac)
 
 
@@ -40,9 +47,6 @@ def main():
                            lr = args.lr)
 
     print('Using device: {}'.format(args.device))
-    print('There are {} Million trainable parameters in the {} model'.format(
-        utils.count_parameters(model), model.__class__.__name__
-    ))
 
     test_loader = torch.utils.data.DataLoader(data_test,
                                               batch_size=args.test_bs)
