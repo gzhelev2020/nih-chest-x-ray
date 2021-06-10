@@ -159,7 +159,7 @@ def run(device: str,
                               model=model,
                               loss_fn=loss_fn,
                               labels=labels,
-                              epochepochs_till_now=epoch,
+                              epochs_till_now=epoch,
                               final_epoch=epochs,
                               log_interval=log_interval)
         print('ROC_AUC_SCORE: {}'.format(roc))
