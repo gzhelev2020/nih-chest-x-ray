@@ -140,16 +140,17 @@ def run(device: str,
     model.to(device)
     loss_fn.to(device)
 
-    for epoch in range(epochs):
+    for epoch in range(1, epochs+1):
         print('--- TRAIN ---')
         train_epoch(device, train_loader, model, loss_fn, optimizer, epoch, epochs,
                     log_interval)
 
         print('--- VAL ---')
-        _, _, roc = val_epoch(device, val_loader, model, loss_fn, labels, epoch, epochs)
+        _, _, roc = val_epoch(device, val_loader, model, loss_fn, labels,
+                              epoch, epochs, log_interval=log_interval)
         print('ROC_AUC_SCORE: {}'.format(roc))
 
-        if ((epoch+1)%save_interval == 0):
+        if (epoch%save_interval == 0):
             model_loc = os.path.join(model_dir, 'model_weights_epoch_{}.pth'.format(epoch))
             torch.save(model.state_dict(), model_loc)
             print('Model saved to {}'.format(model_loc))
