@@ -133,8 +133,10 @@ def run(device: str,
         save_interval: int,
         labels: List,
         lr: float,
-        bs: int,
         model_dir: str):
+    if not os.path.exists(model_dir):
+        os.mkdir(model_dir)
+
     model.to(device)
     loss_fn.to(device)
 
