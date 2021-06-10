@@ -35,7 +35,7 @@ def main():
 
     model = net.get_model(len(ChestXRayImageDataset.labels))
 
-    print(summary(model, input_size=(args.train_bs, 3, 244, 244)))
+    summary(model, input_size=(args.train_bs, 3, 244, 244))
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
                            lr = args.lr)
 
