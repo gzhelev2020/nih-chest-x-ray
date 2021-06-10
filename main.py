@@ -21,6 +21,8 @@ def main():
     parser.add_argument('--lr', type = float, default = 1e-5, help = 'Learning Rate passed to optimizer')
     parser.add_argument('--device', type = str, default = device, help = 'Force usage of device')
     parser.add_argument('--epochs', type = str, default = 2, help = 'Train for n epochs')
+    parser.add_argument('--log-interval', type = int, default = 5, help = 'log every n batches')
+    parser.add_argument('--save-interval', type = int, default = 5, help = 'save every n batches')
     args = parser.parse_args()
 
     data_train = ChestXRayImageDataset(args.data_path, True, transform=config.transform,
