@@ -23,17 +23,19 @@ def main():
     parser.add_argument('--epochs', type = str, default = 2, help = 'Train for n epochs')
     parser.add_argument('--log-interval', type = int, default = 5, help = 'log every n batches')
     parser.add_argument('--save-interval', type = int, default = 5, help = 'save every n batches')
+    parser.add_argument('--data-frac', type = float, default = 1, help = 'use only fraction of the data')
     args = parser.parse_args()
 
     data_train = ChestXRayImageDataset(args.data_path, True, transform=config.transform,
-                                       frac=0.001)
+                                       frac=args.data_frac)
     data_test = ChestXRayImageDataset(args.data_path, False, transform=config.transform,
-                                      frac=0.001)
+                                      frac=args.data_frac)
 
 
     model = net.get_model(len(ChestXRayImageDataset.labels))
 
-
+    print("Trainable parameters:")
+    print(filter(lambda p: p.requires_grad, model.parameters()))
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
                            lr = args.lr)
 
