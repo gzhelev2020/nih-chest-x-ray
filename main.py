@@ -61,6 +61,9 @@ def main():
                            lr = args.lr)
 
     print('Using device: {}'.format(args.device))
+    print('With {} Test datasets, {} val data sets and {} train datasets'.format(
+        len(data_test), len(data_val), len(data_train)
+    ))
 
     test_loader = torch.utils.data.DataLoader(data_test,
                                               batch_size=args.test_bs)
