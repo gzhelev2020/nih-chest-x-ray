@@ -15,8 +15,8 @@ from typing import Any, Callable, Optional, Tuple
 
 
 class ChestXRayImageDataset(VisionDataset):
-    rel_label_file = 'labels.csv'
-    rel_img_dir = 'images'
+    rel_label_file = 'Data_Entry_2017.csv'
+    rel_img_dir = 'images_*/'
 
     labels = ['Atelectasis', 'Cardiomegaly', 'Consolidation', 'Edema',
               'Effusion', 'Emphysema', 'Fibrosis', 'Hernia', 'Infiltration',
@@ -52,7 +52,7 @@ class ChestXRayImageDataset(VisionDataset):
             'Finding Labels': 'findings'
         }, inplace = True)
 
-        # replace 'No Finding' with empty string
+        # replace 'No Finding' with none
         df['findings'] = df['findings'].map(lambda x: x.replace('No Finding',
                                                                 'none'))
 
