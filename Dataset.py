@@ -16,7 +16,7 @@ from typing import Any, Callable, Optional, Tuple
 
 class ChestXRayImageDataset(VisionDataset):
     rel_label_file = 'Data_Entry_2017.csv'
-    rel_img_dir = 'images_*/'
+    rel_img_dir = 'images_*/images'
 
     labels = ['Atelectasis', 'Cardiomegaly', 'Consolidation', 'Edema',
               'Effusion', 'Emphysema', 'Fibrosis', 'Hernia', 'Infiltration',
