@@ -1,7 +1,8 @@
 import glob
 import os
+from functools import reduce
 from itertools import chain
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -9,6 +10,7 @@ import torch
 from PIL import Image
 from torchvision.datasets import VisionDataset
 from torchvision.io import read_image
+
 
 class ChestXRayImages():
     rel_label_file = 'Data_Entry_2017.csv'
@@ -61,23 +63,71 @@ class ChestXRayImages():
         self._data_train = _data.loc[[not x for x in test_filter]].reset_index(drop=True)
 
         # perform k-fold train data split
-        # just splits into k strides
+        # self._data_train is not passed as a parameter to prevent large memory usage
+        self.filters = self._kfold_split(folds)
+
+
+    def _kfold_split(self, folds: int, seed: int = 0) -> List[List[bool]]:
+        '''
+        Performs a k-fold split of self._data_train.
+        A boolean filter list must be returned for each split
+        I.e.,
+            [[True, True, False, False],
+             [False, False, True, True]]
+        For a 2-fold split of a dataset of size 4
+
+        The return value must be a list of :param:folds lists.
+        Where each list must be precisely len(self._data_train) items long.
+        There should be roughly the same number of elements in each split.
+        Each index must be True exatly once (I.g., each data point is contained
+          in exactly one split).
+        It should be taken into account that all images of an individual
+          patient are in the same split.
+        The splits should be randomized but it must return identical results
+          when the same seed is passed.
+        '''
+
+        # Currently just splits into :param:folds strides
+        # I.e., [[True, True, False, False, False, False],
+        #        [False, False, True, True, False, False],
+        #        [False, False, False, False, True, True]]
+        # Where the last first fold-1 items contains the same amout of dataset,
+        # and the last item contains slighly more or less, depeneding on how
+        # well len(self._data_train) is divisable by :param:folds
         items_per_fold = int(len(self._data_train)/folds)
         items_used = [False]*len(self._data_train)
 
-        self.filters = [None for x in range(folds)]
+        _filters = [None for x in range(folds)]
         for i in range(folds-1):
             _start = i * items_per_fold
             _end = _start + items_per_fold - 1
 
             fold_length = _end - _start + 1
-            self.filters[i] = [False]*len(self._data_train)
+            _filters[i] = [False]*len(self._data_train)
 
             for j in range(_start, _end+1):
                 items_used[j] = True
-                self.filters[i][j] = True
+                _filters[i][j] = True
 
-        self.filters[folds-1] = [not x for x in items_used]
+        _filters[folds-1] = [not x for x in items_used]
+
+
+        # Do not delete the following
+        # makes sure all lists are of the same length
+        _it = iter(_filters)
+        _len = len(next(_it))
+        if not all(len(l) == _len for l in _it):
+            raise ValueError('not all lists have same length!')
+
+        # makes sure each element is in at least one fold
+        if not all(reduce(np.logical_or, _filters)):
+            raise ValueError('some items are not in any fold')
+
+        # makes sure each element is in exactly one fold
+        if not all(reduce(np.logical_xor, _filters)):
+            raise ValueError('some items are in more than one fold')
+
+        return _filters
 
 
     def _preprocess_data(self, _data):
