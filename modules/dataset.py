@@ -70,7 +70,8 @@ class ChestXRayImages():
     def _kfold_split(self, folds: int, seed: int = 0) -> List[List[bool]]:
         '''
         Performs a k-fold split of self._data_train.
-        A boolean filter list must be returned for each split
+        A boolean filter list must be created for each split.
+        A list of all these filters must be returned.
         I.e.,
             [[True, True, False, False],
              [False, False, True, True]]
