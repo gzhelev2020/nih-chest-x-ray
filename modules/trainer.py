@@ -97,7 +97,7 @@ def val_epoch(device, val_loader, model, loss_fn, labels, epochs_till_now = None
             running_val_loss += loss.item()*img.shape[0]
             val_loss_list.append(loss.item())
 
-            # storing model predictions for metric evaluat`ion
+            # storing model predictions for metric evaluation
             probs[k: k + out.shape[0], :] = out.cpu()
             gt[   k: k + out.shape[0], :] = target.cpu()
             k += out.shape[0]
